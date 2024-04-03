@@ -63,10 +63,10 @@ def import_webdriver(webdriver_type):
 
 class SouperScraper:
     def __init__(self,
+                 executable_path=None,
                  selenium_webdriver_type="chrome",
                  selenium_service_kwargs={},
-                 selenium_options_kwargs={},
-                 executable_path=None,
+                 selenium_options_kwargs={},                 
                  soup_parser='html.parser',
                  keep_alive=True
                  ) -> None:
@@ -342,3 +342,4 @@ class SouperScraper:
         element = self.find_element_by_text(text)
         self.scroll_to(element)
         return element
+    
