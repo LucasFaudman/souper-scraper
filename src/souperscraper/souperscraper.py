@@ -104,8 +104,7 @@ class SouperScraper:
             selenium_service_kwargs["executable_path"] = str(executable_path)
 
         # Import Selenium WebDriver class, Service class, and Options class for webdriver_type or use the override classes
-        selenium_webdriver_cls, selenium_service_cls, selenium_options_cls = import_webdriver(
-            selenium_webdriver_type)
+        selenium_webdriver_cls, selenium_service_cls, selenium_options_cls = import_webdriver(selenium_webdriver_type)
         selenium_webdriver_cls = selenium_webdriver_cls_override or selenium_webdriver_cls
         selenium_service_cls = selenium_service_cls_override or selenium_service_cls
         selenium_options_cls = selenium_options_cls_override or selenium_options_cls
@@ -386,7 +385,7 @@ class SouperScraper:
             "arguments[0].scrollIntoView(true);", element)
         return element
 
-    def scroll_to_element(self, locator, locator_value):
+    def scroll_to_element(self, locator: str, locator_value: str) -> WebElement:
         """Scroll to element with locator and locator_value"""
         element = self.find_element(locator, locator_value)
         self.scroll_to(element)
@@ -394,19 +393,19 @@ class SouperScraper:
 
     # BY TEXT SHORTCUTS
 
-    def find_element_by_text(self, text):
+    def find_element_by_text(self, text: str) -> WebElement:
         """Find element by text with xpath"""
         return self.find_element_by_xpath(f"//*[text()='{text}']")
 
-    def find_elements_by_text(self, text):
+    def find_elements_by_text(self, text: str) -> WebElement:
         """Find elements by text with xpath"""
         return self.find_elements_by_xpath(f"//*[text()='{text}']")
 
-    def wait_for_element_by_text(self, text, timeout=3.0, poll_frequency=0.5, ignored_exceptions=None):
+    def wait_for_element_by_text(self, text: str, timeout=3.0, poll_frequency=0.5, ignored_exceptions=None) -> WebElement:
         """Wait for element by text with xpath"""
         return self.wait_for_presence_of_element_located_by_xpath(f"//*[text()='{text}']", timeout=timeout, poll_frequency=poll_frequency, ignored_exceptions=ignored_exceptions)
 
-    def scroll_to_element_by_text(self, text):
+    def scroll_to_element_by_text(self, text: str) -> WebElement:
         """Scroll to element by text with xpath"""
         element = self.find_element_by_text(text)
         self.scroll_to(element)
