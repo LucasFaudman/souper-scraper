@@ -25,3 +25,6 @@ Repository = "https://github.com/LucasFaudman/souper-scraper.git"
 
 [tool.setuptools_scm]
 version_file = "src/souperscraper/_version.py"
+
+[tool.black]
+line-length = 120

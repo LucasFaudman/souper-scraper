@@ -22,9 +22,7 @@ from selenium.common.exceptions import (
     TimeoutException,
 )
 
-WebDriverType = Literal[
-    "chrome", "edge", "firefox", "ie", "safari", "webkitgtk", "wpewebkit"
-]
+WebDriverType = Literal["chrome", "edge", "firefox", "ie", "safari", "webkitgtk", "wpewebkit"]
 SoupParser = Literal["html.parser", "lxml", "lxml-xml", "xml", "html5lib"]
 
 
@@ -100,11 +98,7 @@ class SouperScraper:
         save_dynamic_methods: bool = True,
     ) -> None:
         # Check if executable_path exists and add it to the Selenium Service kwargs
-        executable_path = (
-            Path(executable_path)
-            if isinstance(executable_path, str)
-            else executable_path
-        )
+        executable_path = Path(executable_path) if isinstance(executable_path, str) else executable_path
         if not executable_path.exists():
             raise FileNotFoundError(
                 f"Executable path {executable_path} does not exist. Use souperscraper.get_chromedriver() to download chromedriver."
@@ -120,9 +114,7 @@ class SouperScraper:
             selenium_service_cls,
             selenium_options_cls,
         ) = import_webdriver(selenium_webdriver_type)
-        selenium_webdriver_cls = (
-            selenium_webdriver_cls_override or selenium_webdriver_cls
-        )
+        selenium_webdriver_cls = selenium_webdriver_cls_override or selenium_webdriver_cls
         selenium_service_cls = selenium_service_cls_override or selenium_service_cls
         selenium_options_cls = selenium_options_cls_override or selenium_options_cls
 
@@ -160,7 +152,6 @@ class SouperScraper:
         # Save dynamic methods for later use
         self.save_dynamic_methods = save_dynamic_methods
 
-
     def __del__(self):
         """Quit webdriver when SoupScraper object is deleted or garbage collected"""
         if hasattr(self, "webdriver"):
@@ -171,23 +162,21 @@ class SouperScraper:
         # (Defined in this class or dynamically created by __getattr__ with save_dynamic_methods=True)
         if attr in dir(self):
             return super().__getattribute__(attr)
-        
+
         # Check if attribute exists in webdriver object
-        if (webdriver := super().__getattribute__("webdriver")) and attr in dir(
-            webdriver
-        ):
+        if (webdriver := super().__getattribute__("webdriver")) and attr in dir(webdriver):
             return getattr(webdriver, attr)
 
         # If the attr starts with soup, return the attribute from self.soup
         if attr.startswith("soup_"):
             return getattr(super().__getattribute__("soup"), attr[5:])
-        
+
         # Try to create a dynamic attr not found in the SoupScraper, WebDriver, or BeautifulSoup objects
         dynamic_method = None
 
         # Check if attr is a try_ wrapped method or attempt to find locator and expected_condition
         if attr.startswith("try_"):
-            dynamic_method = super().__getattribute__('_try_wrapper')(getattr(self, attr[4:]))
+            dynamic_method = super().__getattribute__("_try_wrapper")(getattr(self, attr[4:]))
         else:
             # Split attribute by '_' to check for 'soup', 'by', 'wait', etc.
             split_attr = attr.split("_")
@@ -207,13 +196,10 @@ class SouperScraper:
             if "wait" in split_attr:
                 wait_index = split_attr.index("wait")
                 offset = 3 if "not" in split_attr else 2
-                expected_condition = getattr(
-                    EC, "_".join(split_attr[wait_index + offset :])
-                )
+                expected_condition = getattr(EC, "_".join(split_attr[wait_index + offset :]))
                 split_attr = split_attr[: wait_index + offset]
 
-            
-            bare_attr = "_".join(split_attr) # attr after removing locator and expected_condition        
+            bare_attr = "_".join(split_attr)  # attr after removing locator and expected_condition
             if locator and expected_condition:
                 dynamic_method = partial(getattr(self, bare_attr), expected_condition, locator)
             elif locator:
@@ -226,12 +212,11 @@ class SouperScraper:
             if self.save_dynamic_methods:
                 setattr(self, attr, dynamic_method)
             return dynamic_method
-        
+
         # Call super().__getattr__ if dynamic method is not found
         return super().__getattribute__(attr)
-    
 
-    def _try_wrapper(self, func):
+    def _try_wrapper(self, func) -> Callable:
         @wraps(func)
         def wrapper(self, *args, ignore_exceptions=(WebDriverException,), **kwargs):
             try:
@@ -265,9 +250,7 @@ class SouperScraper:
         """Returns webdriver.window_handles"""
         return self.webdriver.window_handles
 
-    def _new_window_handle(
-        self, window_type="window", url=None, sleep_secs=None
-    ) -> None:
+    def _new_window_handle(self, window_type="window", url=None, sleep_secs=None) -> None:
         self.webdriver.switch_to.new_window(window_type)
         if url:
             self.goto(url, sleep_secs)
@@ -307,9 +290,7 @@ class SouperScraper:
                 return window_handle
         return None
 
-    def switch_to_window(
-        self, index=None, title=None, url=None, window_handle=None
-    ) -> Optional[str]:
+    def switch_to_window(self, index=None, title=None, url=None, window_handle=None) -> Optional[str]:
         if index:
             window_handle = self._get_window_handle_by_index(index)
         elif title:
@@ -321,9 +302,7 @@ class SouperScraper:
             self._switch_to_window_handle(window_handle)
         return window_handle
 
-    def switch_to_tab(
-        self, index=None, title=None, url=None, window_handle=None
-    ) -> Optional[str]:
+    def switch_to_tab(self, index=None, title=None, url=None, window_handle=None) -> Optional[str]:
         return self.switch_to_window(index, title, url, window_handle)
 
     def new_tab(self, url=None, sleep_secs=None) -> str:
@@ -389,9 +368,7 @@ class SouperScraper:
 
     # GET WRAPPED WEBDRIVER METHODS (ActionChains, ActionBuilder, Alert, WebDriverWait)
 
-    def get_action_chains(
-        self, duration: int = 250, devices: Optional[list] = None
-    ) -> ActionChains:
+    def get_action_chains(self, duration: int = 250, devices: Optional[list] = None) -> ActionChains:
         """Returns ActionChains object from self.webdriver with duration and devices"""
         return ActionChains(self.webdriver, duration, devices)
 
@@ -411,9 +388,7 @@ class SouperScraper:
 
     def get_wait(self, timeout, poll_frequency, ignored_exceptions) -> WebDriverWait:
         """Returns WebDriverWait object from self.webdriver with timeout, poll_frequency, and ignored_exceptions"""
-        return WebDriverWait(
-            self.webdriver, timeout, poll_frequency, ignored_exceptions
-        )
+        return WebDriverWait(self.webdriver, timeout, poll_frequency, ignored_exceptions)
 
     def _wait(
         self,
@@ -429,11 +404,7 @@ class SouperScraper:
         wait = self.get_wait(timeout, poll_frequency, ignored_exceptions)
         try:
             if until:
-                return (
-                    wait.until(method(method_args))
-                    if len(method_args) > 1
-                    else wait.until(method(*method_args))
-                )
+                return wait.until(method(method_args)) if len(method_args) > 1 else wait.until(method(*method_args))
             else:
                 return (
                     wait.until_not(method(method_args))

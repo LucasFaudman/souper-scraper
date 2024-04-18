@@ -4,8 +4,10 @@ from selenium.common.exceptions import JavascriptException, NoSuchElementExcepti
 from bs4 import Tag
 from time import time
 
-scraper = SouperScraper(executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver",
-                        save_dynamic_methods=False)
+scraper = SouperScraper(
+    executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver", save_dynamic_methods=False
+)
+
 
 @pytest.fixture
 def selenium_test_html_static(tmpdir):
@@ -32,10 +34,10 @@ def selenium_test_html_static(tmpdir):
   <label for="newsletter">Newsletter:</label>
   <input type="checkbox" name="newsletter" value="1" /><br><br>
   <input type="submit" value="Submit">
-</form> 
+</form>
 
-<p>To know more about Selenium, visit the official page 
-<a href ="https://www.selenium.dev">Selenium Official Page</a> 
+<p>To know more about Selenium, visit the official page
+<a href ="https://www.selenium.dev">Selenium Official Page</a>
 </p>
 <div id="vegetableSnippet">
     <ol id="vegetables">
@@ -80,8 +82,8 @@ def selenium_test_html_dynamic(tmpdir):
 
 <div id="formContainer"></div>
 
-<p>To know more about Selenium, visit the official page 
-<a href ="https://www.selenium.dev">Selenium Official Page</a> 
+<p>To know more about Selenium, visit the official page
+<a href ="https://www.selenium.dev">Selenium Official Page</a>
 </p>
 
 <script>
@@ -157,16 +159,19 @@ def test_goto():
     assert scraper.current_url == "https://www.example.com/"
     assert scraper.current_title == "Example Domain"
 
+
 def test_goto_sleep():
     start = time()
     scraper.goto("https://www.example.com/", sleep_secs=3)
     end = time()
     assert end - start >= 3
 
+
 def test_get_soup():
     scraper.goto("https://www.example.com/")
     soup = scraper.soup
-    assert isinstance((title := soup.find('title')), Tag) and title.string == "Example Domain"
+    assert isinstance((title := soup.find("title")), Tag) and title.string == "Example Domain"
+
 
 def test_new_tab():
     scraper.goto("https://google.com")
@@ -183,23 +188,42 @@ def test_find_element_by(selenium_test_html_static):
     assert scraper.find_element_by_css_selector("input#fname").get_attribute("value") == "Jane"
     assert scraper.find_element_by_id("fname").get_attribute("value") == "Jane"
     assert scraper.find_element_by_name("fname").get_attribute("value") == "Jane"
-    assert scraper.find_element_by_link_text("Selenium Official Page").get_attribute("href") == "https://www.selenium.dev/"
+    assert (
+        scraper.find_element_by_link_text("Selenium Official Page").get_attribute("href") == "https://www.selenium.dev/"
+    )
     assert scraper.find_element_by_partial_link_text("Selenium").get_attribute("href") == "https://www.selenium.dev/"
     assert scraper.find_element_by_tag_name("h2").text == "Contact Selenium"
     assert scraper.find_element_by_xpath("//input[@id='fname']").get_attribute("value") == "Jane"
-    
+
 
 def test_find_elements_by(selenium_test_html_static=None):
     if selenium_test_html_static:
         scraper.goto(selenium_test_html_static)
-    assert (found_elements := scraper.find_elements_by_class_name("information"))[0].get_attribute("value") == "Jane" and len(found_elements) == 2
-    assert (found_elements := scraper.find_elements_by_css_selector("input#fname"))[0].get_attribute("value") == "Jane" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_id("fname"))[0].get_attribute("value") == "Jane" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_name("fname"))[0].get_attribute("value") == "Jane" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_link_text("Selenium Official Page"))[0].get_attribute("href") == "https://www.selenium.dev/" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_partial_link_text("Selenium"))[0].get_attribute("href") == "https://www.selenium.dev/" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_tag_name("h2"))[0].text == "Contact Selenium" and len(found_elements) == 1
-    assert (found_elements := scraper.find_elements_by_xpath("//input[@id='fname']"))[0].get_attribute("value") == "Jane" and len(found_elements) == 1
+    assert (found_elements := scraper.find_elements_by_class_name("information"))[0].get_attribute(
+        "value"
+    ) == "Jane" and len(found_elements) == 2
+    assert (found_elements := scraper.find_elements_by_css_selector("input#fname"))[0].get_attribute(
+        "value"
+    ) == "Jane" and len(found_elements) == 1
+    assert (found_elements := scraper.find_elements_by_id("fname"))[0].get_attribute("value") == "Jane" and len(
+        found_elements
+    ) == 1
+    assert (found_elements := scraper.find_elements_by_name("fname"))[0].get_attribute("value") == "Jane" and len(
+        found_elements
+    ) == 1
+    assert (found_elements := scraper.find_elements_by_link_text("Selenium Official Page"))[0].get_attribute(
+        "href"
+    ) == "https://www.selenium.dev/" and len(found_elements) == 1
+    assert (found_elements := scraper.find_elements_by_partial_link_text("Selenium"))[0].get_attribute(
+        "href"
+    ) == "https://www.selenium.dev/" and len(found_elements) == 1
+    assert (found_elements := scraper.find_elements_by_tag_name("h2"))[0].text == "Contact Selenium" and len(
+        found_elements
+    ) == 1
+    assert (found_elements := scraper.find_elements_by_xpath("//input[@id='fname']"))[0].get_attribute(
+        "value"
+    ) == "Jane" and len(found_elements) == 1
+
 
 def test_wait_for_element(selenium_test_html_dynamic):
     scraper.goto(selenium_test_html_dynamic)
@@ -210,7 +234,7 @@ def test_wait_for_element(selenium_test_html_dynamic):
     assert scraper.find_element_by_tag_name("ol").is_displayed() == True
     assert scraper.find_element_by_tag_name("ul").is_displayed() == True
     assert len(scraper.find_elements_by_tag_name("li")) == 6
-    
+
     scraper.wait_for_invisibility_of_element_located_by_id("vegetableSnippet", timeout=6)
 
 
@@ -227,13 +251,13 @@ def test_try_wrapper_methods(selenium_test_html_static):
         # Only NoSuchElementException is ignored so JavascriptException should be raised
         scraper.try_execute_script("<invalid JS>", ignore_exceptions=NoSuchElementException)
         assert isinstance(e, JavascriptException)
-    
-    with pytest.raises(JavascriptException) as e:
-      # Try with tuple of exceptions
-        scraper.try_execute_script("<invalid JS>", ignore_exceptions=(NoSuchElementException,))
-        assert isinstance(e, JavascriptException)        
 
-    # No exceptions should be raised since JavascriptException 
+    with pytest.raises(JavascriptException) as e:
+        # Try with tuple of exceptions
+        scraper.try_execute_script("<invalid JS>", ignore_exceptions=(NoSuchElementException,))
+        assert isinstance(e, JavascriptException)
+
+    # No exceptions should be raised since JavascriptException
     # is a subclass of WebDriverException (the default ignored exception)
     bad_js = scraper.try_execute_script("<invalid JS>")
     assert bad_js == None
@@ -260,14 +284,19 @@ def test_save_dynamic_methods(selenium_test_html_static):
     assert id(dynamic_method_getattr_call1) == id(dynamic_method_getattr_call2)
     assert "find_elements_by_class_name" in dir(scraper)
 
-@pytest.mark.parametrize("user_agent", [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-    "SOME ARBITRARY USER AGENT STRING",
-])
+
+@pytest.mark.parametrize(
+    "user_agent",
+    [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "SOME ARBITRARY USER AGENT STRING",
+    ],
+)
 def test_user_agent(user_agent):
-    scraper = SouperScraper(executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver",
-                            user_agent=user_agent)
-    
-    scraper.goto('https://www.whatismybrowser.com/detect/what-is-my-user-agent/')
+    scraper = SouperScraper(
+        executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver", user_agent=user_agent
+    )
+
+    scraper.goto("https://www.whatismybrowser.com/detect/what-is-my-user-agent/")
     ua_elm = scraper.wait_for_visibility_of_element_located_by_id("detected_value")
     assert ua_elm.text.strip('"') == user_agent == scraper.user_agent
