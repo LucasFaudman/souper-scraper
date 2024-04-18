@@ -1,8 +1,11 @@
 import pytest
-from souperscraper import SouperScraper
+from souperscraper import SouperScraper, WebDriverException
+from selenium.common.exceptions import JavascriptException, NoSuchElementException
+from bs4 import Tag
 from time import time
 
-scraper = SouperScraper(executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver")
+scraper = SouperScraper(executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver",
+                        save_dynamic_methods=False)
 
 @pytest.fixture
 def selenium_test_html_static(tmpdir):
@@ -163,7 +166,7 @@ def test_goto_sleep():
 def test_get_soup():
     scraper.goto("https://www.example.com/")
     soup = scraper.soup
-    assert soup.find('title').string == "Example Domain"
+    assert isinstance((title := soup.find('title')), Tag) and title.string == "Example Domain"
 
 def test_new_tab():
     scraper.goto("https://google.com")
@@ -209,3 +212,62 @@ def test_wait_for_element(selenium_test_html_dynamic):
     assert len(scraper.find_elements_by_tag_name("li")) == 6
     
     scraper.wait_for_invisibility_of_element_located_by_id("vegetableSnippet", timeout=6)
+
+
+def test_try_wrapper_methods(selenium_test_html_static):
+    scraper.goto(selenium_test_html_static)
+    with pytest.raises(WebDriverException) as e:
+        scraper.find_element_by_class_name("nonexistent")
+        assert isinstance(e, NoSuchElementException)
+
+    non_elm = scraper.try_find_element_by_class_name("nonexistent")
+    assert non_elm == None
+
+    with pytest.raises(JavascriptException) as e:
+        # Only NoSuchElementException is ignored so JavascriptException should be raised
+        scraper.try_execute_script("<invalid JS>", ignore_exceptions=NoSuchElementException)
+        assert isinstance(e, JavascriptException)
+    
+    with pytest.raises(JavascriptException) as e:
+      # Try with tuple of exceptions
+        scraper.try_execute_script("<invalid JS>", ignore_exceptions=(NoSuchElementException,))
+        assert isinstance(e, JavascriptException)        
+
+    # No exceptions should be raised since JavascriptException 
+    # is a subclass of WebDriverException (the default ignored exception)
+    bad_js = scraper.try_execute_script("<invalid JS>")
+    assert bad_js == None
+
+
+def test_save_dynamic_methods(selenium_test_html_static):
+    scraper.goto(selenium_test_html_static)
+
+    # Test with save_dynamic_methods = False
+    # Each call should return a new method
+    # Methods should not be saved
+    scraper.save_dynamic_methods = False
+    dynamic_method_getattr_call1 = scraper.find_elements_by_class_name
+    dynamic_method_getattr_call2 = scraper.find_elements_by_class_name
+    assert id(dynamic_method_getattr_call1) != id(dynamic_method_getattr_call2)
+    assert "find_elements_by_class_name" not in dir(scraper)
+
+    # Test with save_dynamic_methods = True
+    # Each call should return the same method
+    # Methods should be saved
+    scraper.save_dynamic_methods = True
+    dynamic_method_getattr_call1 = scraper.find_elements_by_class_name
+    dynamic_method_getattr_call2 = scraper.find_elements_by_class_name
+    assert id(dynamic_method_getattr_call1) == id(dynamic_method_getattr_call2)
+    assert "find_elements_by_class_name" in dir(scraper)
+
+@pytest.mark.parametrize("user_agent", [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "SOME ARBITRARY USER AGENT STRING",
+])
+def test_user_agent(user_agent):
+    scraper = SouperScraper(executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver",
+                            user_agent=user_agent)
+    
+    scraper.goto('https://www.whatismybrowser.com/detect/what-is-my-user-agent/')
+    ua_elm = scraper.wait_for_visibility_of_element_located_by_id("detected_value")
+    assert ua_elm.text.strip('"') == user_agent == scraper.user_agent
