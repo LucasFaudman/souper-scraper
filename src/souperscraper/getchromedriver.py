@@ -8,13 +8,14 @@ from typing import Optional
 DEFAULT_PATH = Path("~/chromedriver/")
 
 
-def options_menu(options, prompt, param_name="option", default=-1):
+def options_menu(options, prompt, param_name="option", default=-1, prompt_display_secs=2, selection_display_secs=1):
     """
     Display a menu of options and prompt the user to select one.
     """
     selected = None
-    while not selected:
+    while selected is None:
         print(prompt)
+        sleep(prompt_display_secs)
         for i, option in enumerate(options):
             print(f"({i+1}) {option}")
         print()
@@ -33,7 +34,10 @@ def options_menu(options, prompt, param_name="option", default=-1):
         else:
             selected = int(selected) - 1
 
-    return options[selected]
+    selection = options[selected]
+    print(f"\nSelected {param_name}: {selection}")
+    sleep(selection_display_secs)
+    return selection
 
 
 def select_chromedriver(
@@ -50,13 +54,13 @@ def select_chromedriver(
 
     version_options = [f"Version {ms}" for ms in milestones if milestones[ms]["downloads"].get("chromedriver")]
     version_q = f"""
-    Which chrome version number do you have installed?
-    Open chrome and go to:
-        chrome://settings/help
-    you will see a version number like Version 121.0.6167.85 (Official Build) (x86_64)
-    which corresponds to chromedriver version 121
+Which chrome version number do you have installed?
+Open chrome and go to:
+    chrome://settings/help
+you will see a version number like Version 121.0.6167.85 (Official Build) (x86_64)
+which corresponds to chromedriver version 121
 
-    Available chromedriver versions:"""
+Available chromedriver versions:"""
     selected_version = version_number or options_menu(version_options, version_q, "version number", -1).split(" ")[1]
     if int(selected_version) >= 120:
         headless = headless or input("Do you want to use the headless version of chromedriver? (y/n): ").lower() == "y"
@@ -65,9 +69,7 @@ def select_chromedriver(
     executable = "chromedriver" if not headless else "chrome-headless-shell"
 
     platform_options = [download["platform"] for download in milestones[selected_version]["downloads"][executable]]
-    platform_q = f"""Which platform are you using?
-
-    Available platforms:"""
+    platform_q = "Which platform are you using?\n\nAvailable platforms:"
     platform = platform or options_menu(platform_options, platform_q, "platform", 0)
 
     filename = f"{executable}{selected_version}-{platform}.zip"
