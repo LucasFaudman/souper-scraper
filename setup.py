@@ -42,4 +42,9 @@ setup(
         "Homepage": "https://github.com/LucasFaudman/souper-scraper.git",
         "Repository": "https://github.com/LucasFaudman/souper-scraper.git",
     },
+    entry_points={
+        "console_scripts": [
+            "getchromedriver=souperscraper.getchromedriver:get_chromedriver",
+        ],
+    },
 )
