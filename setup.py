@@ -22,7 +22,6 @@ setup(
     python_requires=">=3.8",
     license="LICENSE",
     classifiers=[
-        "Framework :: Selenium",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: MIT License",

@@ -3,12 +3,13 @@ requires = ["setuptools", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
+version = "0.1.0"
 authors = [{name = "Lucas Faudman", email = "lucasfaudman@gmail.com"}]
-dynamic = ["version"]
+dynamic = ["classifiers"]
 name = "souperscraper"
 requires-python = ">=3.8"
 readme = "README.md"
-license = { file = "LICENSE.txt" }
+license = { file = "LICENSE" }
 description = "A simple web scraper base combining Beautiful Soup and Selenium"
 keywords = ["web-scraping", "scraping", "easy", "beautifulsoup4", "beautifulsoup", "bs4", "selenium", "selenium-webdriver"]
 dependencies = [
