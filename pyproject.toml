@@ -10,7 +10,7 @@ requires-python = ">=3.8"
 readme = "README.md"
 license = { file = "LICENSE.txt" }
 description = "A simple web scraper base combining Beautiful Soup and Selenium"
-keywords = ["web-scraping", "scraping", "beautifulsoup4", "beautifulsoup", "bs4", "selenium", "selenium-webdriver"]
+keywords = ["web-scraping", "scraping", "easy", "beautifulsoup4", "beautifulsoup", "bs4", "selenium", "selenium-webdriver"]
 dependencies = [
     "selenium",
     "beautifulsoup4",
