@@ -5,7 +5,7 @@ from time import sleep
 from pathlib import Path
 from typing import Optional
 
-DEFAULT_PATH = Path("~/chromedriver/")
+DEFAULT_PATH = Path.home() / ".chromedriver"
 
 
 def options_menu(options, prompt, param_name="option", default=-1, prompt_display_secs=2, selection_display_secs=1):
@@ -87,7 +87,9 @@ def download_chromedriver(filename: str, download_url: str, destdir: Optional[Pa
     Download the chromedriver zip file from the download URL and save it to the destination directory.
     """
     if not destdir:
-        destdir_input = input(f"Where do you want to save {filename}? (default: {DEFAULT_PATH}): ").rstrip("/")
+        destdir_input = input(f"Where do you want to save {filename}? (default: {DEFAULT_PATH / filename}): ").rstrip(
+            "/"
+        )
         if not destdir_input:
             destdir = DEFAULT_PATH.resolve()
         else:
@@ -137,5 +139,12 @@ def get_chromedriver() -> Optional[Path]:
     return executable_path
 
 
+def main():
+    try:
+        get_chromedriver()
+    except KeyboardInterrupt:
+        print("\nExiting...")
+
+
 if __name__ == "__main__":
-    get_chromedriver()
+    main()

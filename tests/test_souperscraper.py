@@ -2,10 +2,11 @@ import pytest
 from souperscraper import SouperScraper, WebDriverException
 from selenium.common.exceptions import JavascriptException, NoSuchElementException
 from bs4 import Tag
+from pathlib import Path
 from time import time
 
 scraper = SouperScraper(
-    executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver", save_dynamic_methods=False
+    executable_path=Path(__file__).parent.parent.parent / "chromedriver", save_dynamic_methods=False
 )
 
 

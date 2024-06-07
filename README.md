@@ -4,14 +4,14 @@
 
 
 ## Setup
-1. Install the required packages
+1. Install with pip
 ```bash
-pip3 install selenium beautifulsoup4 requests
+pip install souperscraper
 ```
 
-2. Download the appropriate [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) for your Chrome version using [get_chrome_driver.py](https://github.com/LucasFaudman/souper-scraper/blob/main/src/souperscraper/getchromedriver.py)
+2. Download the appropriate [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) for your Chrome version using [get_chrome_driver.py](https://github.com/LucasFaudman/souper-scraper/blob/main/src/souperscraper/getchromedriver.py) or manually from the [ChromeDriver website](https://sites.google.com/a/chromium.org/chromedriver/downloads). To find your Chrome version, go to [`chrome://settings/help`](chrome://settings/help) in your browser.
 ```bash
-python3 souper-scraper/src/souperscraper/get_chrome_driver.py
+getchromedriver
 ```
 
 3. Create a new SouperScaper object using path to your ChromeDriver
@@ -39,3 +39,20 @@ search_input = scraper.wait_for_visibility_of_element_located_by_id('your-repos-
 search_input.send_keys('souper-scraper')
 search_input.submit()
 ```
+
+## BeautifulSoup Reference
+- [Quick Start](https://beautiful-soup-4.readthedocs.io/en/latest/#quick-start)
+- [Types of Objects](https://beautiful-soup-4.readthedocs.io/en/latest/#kinds-of-objects)
+- [The BeautifulSoup object](https://beautiful-soup-4.readthedocs.io/en/latest/#beautifulsoup)
+- [Navigating the HTML tree](https://beautiful-soup-4.readthedocs.io/en/latest/#navigating-the-tree)
+- [Searching for HTML Elements](https://beautiful-soup-4.readthedocs.io/en/latest/#searching-the-tree)
+- [Modifying the tree](https://beautiful-soup-4.readthedocs.io/en/latest/#modifying-the-tree)
+
+## Selenium Reference
+- [Quick Start](https://selenium-python.readthedocs.io/getting-started.html)
+- [Navigating the Web](https://selenium-python.readthedocs.io/getting-started.html#)
+- [Locating HTML Elements](https://selenium-python.readthedocs.io/locating-elements.html)
+- [Interacting with HTML elements on the page](https://selenium-python.readthedocs.io/navigating.html#interacting-with-the-page)
+- [Filling in Forms](https://selenium-python.readthedocs.io/navigating.html#filling-in-forms)
+- [Waiting (for page to load, element to be visible, etc)](https://selenium-python.readthedocs.io/waits.html)
+- [Full Webdriver API Reference](https://selenium-python.readthedocs.io/api.html)

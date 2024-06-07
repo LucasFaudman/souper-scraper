@@ -43,7 +43,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "getchromedriver=souperscraper.getchromedriver:get_chromedriver",
+            "getchromedriver=souperscraper.getchromedriver:main",
         ],
     },
 )
