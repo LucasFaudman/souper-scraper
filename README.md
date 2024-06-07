@@ -14,7 +14,7 @@ pip install souperscraper
 getchromedriver
 ```
 
-3. Create a new SouperScaper object using path to your ChromeDriver
+3. Create a new SouperScaper object using the path to your ChromeDriver
 ```python
 from souper_scraper import SouperScraper
 

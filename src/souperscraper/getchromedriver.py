@@ -135,7 +135,7 @@ def get_chromedriver() -> Optional[Path]:
         print("Failed to download and extract chromedriver. Error: ", e)
         return None
 
-    print("Success. Chromedriver executable downloaded and saved to", executable_path)
+    print("Success. Chromedriver executable downloaded and saved to:\n", executable_path)
     return executable_path
 
 
