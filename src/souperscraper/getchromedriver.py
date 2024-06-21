@@ -3,6 +3,7 @@ import zipfile
 import argparse
 from time import sleep
 from pathlib import Path
+from os import access, X_OK
 from typing import Optional
 
 DEFAULT_PATH = Path.home() / ".chromedriver"
@@ -115,6 +116,19 @@ def download_chromedriver(filename: str, download_url: str, destdir: Optional[Pa
     return executable_path
 
 
+def try_make_executable(executable_path: Path):
+    """
+    Try to make the chromedriver executable. Return True if successful, False otherwise.
+    """
+    try:
+        print(f"Making {executable_path} executable...")
+        executable_path.chmod(executable_path.stat().st_mode | X_OK)
+    except Exception as e:
+        print(f"Failed to make {executable_path} executable. Error: {e}")
+
+    return access(executable_path, X_OK)
+
+
 def get_chromedriver() -> Optional[Path]:
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", type=int, help="Chromedriver version number")
@@ -136,6 +150,19 @@ def get_chromedriver() -> Optional[Path]:
         return None
 
     print("Success. Chromedriver executable downloaded and saved to:\n", executable_path)
+
+    if not try_make_executable(executable_path):
+        print("Failed to make chromedriver executable. You may need to do this manually.")
+        print("To make the chromedriver executable, run the following command:")
+        print(f"chmod +x {executable_path}")
+    else:
+        print("Chromedriver is now executable.")
+
+    print("\nYou can now use the chromedriver with SouperScraper. For example:")
+    print("from souperscraper import SouperScraper")
+    print(f'scraper = SouperScraper("{executable_path!s}")')
+    print("scraper.goto('https://example.com')")
+    print("header = scraper.soup.find('h1').text")
     return executable_path
 
 
