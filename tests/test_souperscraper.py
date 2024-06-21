@@ -5,9 +5,9 @@ from bs4 import Tag
 from pathlib import Path
 from time import time
 
-scraper = SouperScraper(
-    executable_path=Path(__file__).parent.parent.parent / "chromedriver", save_dynamic_methods=False
-)
+DEFAULT_CHROMEDRIVER_PATH = list(filter(Path.is_file, (Path.home() / ".chromedriver").rglob("chromedriver")))[0]
+
+scraper = SouperScraper(executable_path=DEFAULT_CHROMEDRIVER_PATH, save_dynamic_methods=False)
 
 
 @pytest.fixture
@@ -294,9 +294,7 @@ def test_save_dynamic_methods(selenium_test_html_static):
     ],
 )
 def test_user_agent(user_agent):
-    scraper = SouperScraper(
-        executable_path="/Users/lucasfaudman/Documents/souperscraper/chromedriver", user_agent=user_agent
-    )
+    scraper = SouperScraper(executable_path=DEFAULT_CHROMEDRIVER_PATH, user_agent=user_agent)
 
     scraper.goto("https://www.whatismybrowser.com/detect/what-is-my-user-agent/")
     ua_elm = scraper.wait_for_visibility_of_element_located_by_id("detected_value")
