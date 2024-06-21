@@ -84,7 +84,6 @@ def import_webdriver(
 class SouperScraper:
     def __init__(
         self,
-        soup_parser: SoupParser = "html.parser",
         executable_path: Union[str, Path] = "./chromedriver",
         selenium_webdriver_type: WebDriverType = "chrome",
         selenium_service_kwargs: Optional[dict] = None,
@@ -92,6 +91,7 @@ class SouperScraper:
         selenium_webdriver_cls_override: Optional[Type] = None,
         selenium_service_cls_override: Optional[Type] = None,
         selenium_options_cls_override: Optional[Type] = None,
+        soup_parser: SoupParser = "html.parser",
         keep_alive: bool = True,
         user_agent: Optional[str] = None,
         proxy: Optional[str] = None,
