@@ -9,16 +9,17 @@
 pip install souperscraper
 ```
 
-2. Download the appropriate [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) for your Chrome version using [get_chrome_driver.py](https://github.com/LucasFaudman/souper-scraper/blob/main/src/souperscraper/getchromedriver.py) or manually from the [ChromeDriver website](https://sites.google.com/a/chromium.org/chromedriver/downloads). To find your Chrome version, go to [`chrome://settings/help`](chrome://settings/help) in your browser.
+2. Download the appropriate [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) for your Chrome version using [getchromedriver.py](https://github.com/LucasFaudman/souper-scraper/blob/main/src/souperscraper/getchromedriver.py) (command below) or manually from the [ChromeDriver website](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+> To find your Chrome version, go to [`chrome://settings/help`](chrome://settings/help) in your browser.
 ```bash
 getchromedriver
 ```
 
 3. Create a new SouperScaper object using the path to your ChromeDriver
 ```python
-from souper_scraper import SouperScraper
+from souperscraper import SouperScraper
 
-scraper = SouperScraper(executable_path='/path/to/your/chromedriver')
+scraper = SouperScraper('/path/to/your/chromedriver')
 ```
 
 4. Start scraping using BeautifulSoup and/or Selenium methods
