@@ -122,7 +122,7 @@ def try_make_executable(executable_path: Path):
     """
     try:
         print(f"Making {executable_path} executable...")
-        executable_path.chmod(executable_path.stat().st_mode | X_OK)
+        executable_path.chmod(0o755)
     except Exception as e:
         print(f"Failed to make {executable_path} executable. Error: {e}")
 
@@ -152,9 +152,9 @@ def get_chromedriver() -> Optional[Path]:
     print("Success. Chromedriver executable downloaded and saved to:\n", executable_path)
 
     if not try_make_executable(executable_path):
-        print("Failed to make chromedriver executable. You may need to do this manually.")
-        print("To make the chromedriver executable, run the following command:")
-        print(f"chmod +x {executable_path}")
+        print("\nFailed to make chromedriver executable. You may need to do this manually.")
+        print("\nTo make the chromedriver executable, run the following command:")
+        print(f"chmod +x {executable_path}\n")
     else:
         print("Chromedriver is now executable.")
 

@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-version = "1.0.1"
+version = "1.0.2"
 authors = [{name = "Lucas Faudman", email = "lucasfaudman@gmail.com"}]
 dynamic = ["classifiers"]
 name = "souperscraper"
